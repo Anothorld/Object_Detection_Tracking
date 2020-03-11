@@ -3,7 +3,7 @@
 
 import tensorflow as tf
 from operator import mul
-from itertools import izip_longest
+from itertools import zip_longest
 import random,itertools
 from collections import defaultdict
 import math,sys,os,random
@@ -61,9 +61,9 @@ class FIFO_ME:
 # return the gpu utilization at the moment. float between 0~1.0
 # tested for nvidia 384.90
 # gpuid_range is a tuple of (gpu_startid, gpu_num)
-import commands
+import subprocess
 def parse_nvidia_smi(gpuid_range):
-	nvi_out = commands.getoutput("nvidia-smi")
+	nvi_out = subprocess.getoutput("nvidia-smi")
 	gpu_info_blocks = get_gpu_info_block(nvi_out)[gpuid_range[0]:(gpuid_range[0] + gpuid_range[1])]
 	num_gpu = len(gpu_info_blocks) # the ones we care
 	# all are a list of 

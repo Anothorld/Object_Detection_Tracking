@@ -187,7 +187,7 @@ def draw_boxes(im, boxes, labels=None, color=None,font_scale=0.3,thickness=1):
 
 		cat_name = labels[i].split(",")[0]
 		#color = None
-		if cat2color.has_key(cat_name):
+		if cat_name in cat2color :
 			color = cat2color[cat_name]
 
 		best_color = COLOR if color is None else color
@@ -212,9 +212,9 @@ def draw_boxes(im, boxes, labels=None, color=None,font_scale=0.3,thickness=1):
 				best_color = COLOR_CANDIDATES[best_color_ind].tolist()
 
 			cv2.putText(im, label, (textbox.x1, textbox.y2),
-						FONT, FONT_SCALE, color=best_color)#, lineType=cv2.LINE_AA)
+						FONT, FONT_SCALE, color=tuple(best_color.tolist()))#, lineType=cv2.LINE_AA)
 		cv2.rectangle(im, (box[0], box[1]), (box[2], box[3]),
-					  color=best_color, thickness=thickness)
+					  color=tuple(best_color.tolist()), thickness=thickness)
 	return im
 
 def get_keypoints():
@@ -461,7 +461,7 @@ if __name__ == "__main__":
 		data = [one for one in data if one['cat_name'].lower() == args.only.lower()]
 
 	# convert the boexs format from COCO
-	for i in xrange(len(data)):
+	for i in range(len(data)):
 		data[i]['bbox'] = convert_box(data[i]['bbox'])
 
 	newimg = draw_result(img,data,hasmask=args.mask,haskp=args.kp,nobox=args.nobox,kp_thresh=args.kp_thres)

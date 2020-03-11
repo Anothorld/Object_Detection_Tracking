@@ -204,7 +204,7 @@ class Mask_RCNN_FPN():
     self.anchor_labels = []
     self.anchor_boxes = []
     num_anchors = len(config.anchor_ratios)
-    for k in xrange(len(config.anchor_strides)):
+    for k in range(len(config.anchor_strides)):
       self.anchor_labels.append(tf.placeholder(tf.int32,[None, None, num_anchors],name="anchor_labels_lvl%s"%(k+2)))
       self.anchor_boxes.append(tf.placeholder(tf.float32,[None, None, num_anchors,4],name="anchor_boxes_lvl%s"%(k+2)))
 
@@ -213,7 +213,7 @@ class Mask_RCNN_FPN():
 
     self.so_gt_boxes = []
     self.so_gt_labels = []
-    for i in xrange(len(config.small_objects)):
+    for i in range(len(config.small_objects)):
       self.so_gt_boxes.append(tf.placeholder(tf.float32,[None, 4],name="so_gt_boxes_c%s"%(i+1)))
       self.so_gt_labels.append(tf.placeholder(tf.int64,[None,],name="so_gt_labels_c%s"%(i+1)))
 
@@ -309,7 +309,7 @@ class Mask_RCNN_FPN():
     all_boxes = []
     all_scores = []
     fpn_nms_topk = config.rpn_train_post_nms_topk if config.is_train else config.rpn_test_post_nms_topk
-    for lvl in xrange(num_lvl):
+    for lvl in range(num_lvl):
       with tf.name_scope("Lvl%s"%(lvl+2)):
         anchors = multilevel_anchors[lvl]
         pred_boxes_decoded = decode_bbox_target(multilevel_box_logits[lvl], anchors,decode_clip=config.bbox_decode_clip)

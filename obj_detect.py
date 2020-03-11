@@ -451,7 +451,7 @@ if __name__ == "__main__":
         else:
           predfile = os.path.join(video_out_path, "%d.json"%(cur_frame))
         with open(predfile,"w") as f:
-          json.dump(pred, f)
+          json.dump(str(pred), f)
 
         # for visualization
         if args.visualize:

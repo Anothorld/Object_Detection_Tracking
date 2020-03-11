@@ -627,7 +627,7 @@ if __name__ == "__main__":
           predfile = os.path.join(video_out_path, "%d.json" % (cur_frame))
 
         with open(predfile, "w") as f:
-          json.dump(pred, f)
+          json.dump(str(pred), f)
 
         # for visualization
         if args.visualize:
@@ -667,7 +667,7 @@ if __name__ == "__main__":
             for row in tracking_results:
               line = '%d,%d,%.2f,%.2f,%.2f,%.2f,1,-1,-1,-1' % (
               row[0], row[1], row[2], row[3], row[4], row[5])
-              fw.write(line + '\n')
+              fw.write(bytes(line + '\n', encoding='utf-8'))
 
       if args.test_frame_extraction:
         tqdm.write(

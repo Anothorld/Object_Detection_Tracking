@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
 			box = [float(left), float(top), float(width), float(height)]
 
-			if not data.has_key(frameIdx):
+			if frameIdx not in data:
 				data[frameIdx] = []
 			data[frameIdx].append({
 				"category_id": targetClass2id[args.cat_name],
