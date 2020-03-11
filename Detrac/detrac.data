@@ -1,0 +1,5 @@
+class = 4
+train = /home/zlz/PycharmProjects/Detrac/train.txt
+train = /home/zlz/PycharmProjects/Detrac/test.txt
+names = /home/zlz/PycharmProjects/Detrac/detrac.names
+backup = backup/detrac
