@@ -10,7 +10,7 @@ WIDTH = 960
 HEIGHT = 540
 
 
-def one_xml2txt(xml_file, img_root=None):
+def one_xml2txt(xml_file, image_dir=None, out_path=''):
     FrameNumCount = 1
     video_name = xml_file.split('/')[-1].split('.')[0]
     tree = ET.parse(xml_file)
@@ -30,12 +30,18 @@ def one_xml2txt(xml_file, img_root=None):
         frameID = int(child_frame.attrib['num'])
         density = int(child_frame.attrib['density'])
         labels = np.array([b'Vehicle' for i in range(density)])
-        # img = cv2.imread(os.path.join(img_root, 'img{:05}.jpg'.format(frameID)))
-        # cv2.fillPoly(img, ignore_area, (127, 127, 127))
-        # # cv2.imshow('img', img)
-        # # cv2.waitKey(0)
-        # cv2.imwrite('/home/zlz/PycharmProjects/Detrac/YOLOTrainData/img{:05}.jpg'.format(FrameNumCount), img)
-        # print('frameID: ', frameID)
+        img = cv2.imread(os.path.join(image_dir, 'img{:05}.jpg'.format(frameID)))
+        cv2.fillPoly(img, ignore_area, (127, 127, 127))
+        # cv2.imshow('img', img)
+        # cv2.waitKey(0)
+        if not os.path.isdir(os.path.join(out_path, 'training_frames', video_name)):
+            os.makedirs(os.path.join(out_path, 'training_frames', video_name))
+        if not os.path.isdir(os.path.join(out_path, 'training_annotations')):
+            os.makedirs(os.path.join(out_path, 'training_annotations'))
+
+        cv2.imwrite(os.path.join(out_path, 'training_frames', video_name, '{}_F_{:08}.jpg'.format(video_name, FrameNumCount)), img)
+
+        print('frameID: ', frameID)
         target_list = child_frame.find('target_list')
         child1s_target = target_list.findall('target')
         for child1_target in child1s_target:
@@ -44,7 +50,7 @@ def one_xml2txt(xml_file, img_root=None):
             box_list.append([float(box['left']), float(box['top']), float(box['left']) + float(box['width']),
                           float(box['top']) + float(box['height'])])
         boxes = np.array(box_list, dtype=np.float32)
-        np.savez('{}_F_{:08}.npz'.format(video_name, FrameNumCount), labels=labels, boxes=boxes)
+        np.savez(os.path.join(out_path, 'training_annotations', '{}_F_{:08}.npz'.format(video_name, FrameNumCount)), labels=labels, boxes=boxes)
         FrameNumCount += 1
 
 def xml2txt():
@@ -130,6 +136,13 @@ def generate_cfgs():
     print('backup = backup/detrac', file=data)
 
 if __name__ == "__main__":
-    one_xml2txt('/home/arnold/PycharmProjects/Object_Detection_Tracking/MVI_20011.xml')
+    XML_ROOT = '/home/zlz/DataSets/DETRAC/DETRAC-Train-Annotations-XML'
+    IMAGE_PATH = '/home/zlz/DataSets/DETRAC/DETRAC-train-data/Insight-MVT_Annotation_Trainb'
+    for anno in os.listdir(XML_ROOT):
+        image_name = anno.split('.')[0]
+        xml_file = os.path.join(XML_ROOT, anno)
+        image_dir = os.path.join(IMAGE_PATH, image_name)
+        one_xml2txt(xml_file, image_dir)
+
     # xml2txt()
     # generate_cfgs()
