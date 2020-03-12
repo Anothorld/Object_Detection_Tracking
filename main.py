@@ -651,14 +651,14 @@ def read_data_diva(config, idlst, framepath, annopath, tococo=False, randp=None,
     no_so_box = True
     no_object = True
     for i,classname in enumerate(list(anno['labels'])):
-      if targetClass2id.has_key(classname) or (
-          config.bupt_exp and bupt_act_mapping.has_key(classname)) or (
-          config.meva_exp and meva_act_mapping.has_key(classname)):
+      if classname in targetClass2id or (
+          config.bupt_exp and classname in bupt_act_mapping) or (
+          config.meva_exp and classname in meva_act_mapping):
 
-        if config.bupt_exp and bupt_act_mapping.has_key(classname):
+        if config.bupt_exp and classname in bupt_act_mapping:
           classname = bupt_act_mapping[classname]
 
-        if config.meva_exp and meva_act_mapping.has_key(classname):
+        if config.meva_exp and classname in meva_act_mapping:
           classname = meva_act_mapping[classname]
 
         targetClass2exist[classname] = 1
