@@ -10,7 +10,7 @@ WIDTH = 960
 HEIGHT = 540
 
 
-def one_xml2txt(xml_file, image_dir=None, out_path=''):
+def one_xml2txt(xml_file, image_dir, val_lst, train_lst, out_path=''):
     FrameNumCount = 1
     video_name = xml_file.split('/')[-1].split('.')[0]
     tree = ET.parse(xml_file)
@@ -26,6 +26,8 @@ def one_xml2txt(xml_file, image_dir=None, out_path=''):
         ignore_area.append(np.array([[x, y], [x + w, y], [x + w, y + h], [x, y + h]]))
     childs_obj = root.findall('frame')
     for child_frame in tqdm(childs_obj):
+        randint = np.random.randint(0, 10)
+
         box_list = []
         frameID = int(child_frame.attrib['num'])
         density = int(child_frame.attrib['density'])
@@ -40,8 +42,11 @@ def one_xml2txt(xml_file, image_dir=None, out_path=''):
             os.makedirs(os.path.join(out_path, 'training_annotations'))
 
         cv2.imwrite(os.path.join(out_path, 'training_frames', video_name, '{}_F_{:08}.jpg'.format(video_name, FrameNumCount)), img)
-
-        print('frameID: ', frameID)
+        if randint < 3:
+            val_lst.write(os.path.join(os.getcwd(), 'training_frames', video_name, '{}_F_{:08}.jpg\n'.format(video_name, FrameNumCount)))
+        else:
+            train_lst.write(os.path.join(os.getcwd(), 'training_frames', video_name, '{}_F_{:08}.jpg\n'.format(video_name, FrameNumCount)))
+        # print('frameID: ', frameID)
         target_list = child_frame.find('target_list')
         child1s_target = target_list.findall('target')
         for child1_target in child1s_target:
@@ -138,11 +143,14 @@ def generate_cfgs():
 if __name__ == "__main__":
     XML_ROOT = '/home/zlz/DataSets/DETRAC/DETRAC-Train-Annotations-XML'
     IMAGE_PATH = '/home/zlz/DataSets/DETRAC/DETRAC-train-data/Insight-MVT_Annotation_Trainb'
+    val_txt = open('Detrac_val_set.lst', 'w')
+    train_txt = open('Detrac_train_set.lst', 'w')
     for anno in os.listdir(XML_ROOT):
         image_name = anno.split('.')[0]
         xml_file = os.path.join(XML_ROOT, anno)
         image_dir = os.path.join(IMAGE_PATH, image_name)
-        one_xml2txt(xml_file, image_dir)
-
+        one_xml2txt(xml_file, image_dir, val_lst=val_txt, train_lst=train_txt)
+    val_txt.close()
+    train_txt.close()
     # xml2txt()
     # generate_cfgs()
