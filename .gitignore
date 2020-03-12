@@ -15,4 +15,4 @@
 /track1.lst
 /MVI_20011.xml
 *.npz
-/Detrac/training_frames/*.jpg
+/Detrac/training_frames/*
